@@ -3,6 +3,15 @@ class TeammateController < UIViewController
     view.backgroundColor = UIColor.whiteColor
     view.addSubview(display_name_field)
     view.addSubview(spoken_name_field)
+    navigationItem.leftBarButtonItem = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
+      UIBarButtonSystemItemCancel,
+      target: self,
+      action: :cancel)
+
+    navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
+      UIBarButtonSystemItemDone,
+      target: self,
+      action: :done)
   end
 
   def display_name_field
@@ -31,15 +40,9 @@ class TeammateController < UIViewController
 
   def showDetailsForTeammate(teammate)
     @teammate = teammate
-    if !teammate
-      self.title = "New teammate"
-      display_name_field.text = ""
-      spoken_name_field.text = ""
-    else
-      self.title = @teammate.display_name
-      display_name_field.text = @teammate.display_name
-      spoken_name_field.text = @teammate.spoken_name
-    end
+    self.title = @teammate.display_name || "New teammate"
+    display_name_field.text = @teammate.display_name
+    spoken_name_field.text = @teammate.spoken_name
   end
 
   def textFieldShouldReturn(text_field)
@@ -50,12 +53,15 @@ class TeammateController < UIViewController
     end
   end
 
-  def viewWillDisappear(animated)
-    super
-    if @teammate
-      @teammate.display_name = display_name_field.text
-      @teammate.spoken_name = spoken_name_field.text
-      @teammate.save
-    end
+  def done
+    @teammate.display_name = display_name_field.text
+    @teammate.spoken_name = spoken_name_field.text
+    @teammate.save
+
+    navigationController.popViewControllerAnimated(true)
+  end
+
+  def cancel
+    navigationController.popViewControllerAnimated(true)
   end
 end

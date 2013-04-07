@@ -3,7 +3,11 @@ class TeamController < UITableViewController
 
   def viewDidLoad
     view.dataSource = view.delegate = self
-    navigationController.navigationBar.topItem.rightBarButtonItem = editButtonItem
+    navigationItem.leftBarButtonItem = editButtonItem
+    navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
+      UIBarButtonSystemItemAdd,
+      target: self,
+      action: :addTeammate)
   end
 
   def viewDidAppear(animated)
@@ -14,9 +18,22 @@ class TeamController < UITableViewController
   end
 
   def dataDidChange(notification)
-    if notification.object.is_a?(Teammate) && notification.userInfo[:action] == 'update'
-      view.reloadRowsAtIndexPaths([@editing_teammate_index], withRowAnimation: false)
+    if notification.object.is_a?(Teammate)
+      if notification.userInfo[:action] == 'update'
+        view.reloadRowsAtIndexPaths([@editing_teammate_index], withRowAnimation: false)
+      elsif notification.userInfo[:action] == 'add'
+        view.reloadData
+      end
     end
+  end
+
+  def addTeammate
+    editTeammate(Teammate.new)
+  end
+
+  def editTeammate(teammate)
+    navigationController.pushViewController(teammate_controller, animated: true)
+    teammate_controller.showDetailsForTeammate(teammate)
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
@@ -37,9 +54,7 @@ class TeamController < UITableViewController
   end
 
   def tableView(tableView, accessoryButtonTappedForRowWithIndexPath: indexPath)
-    teammate = Teammate.all[indexPath.row]
-    navigationController.pushViewController(teammate_controller, animated: true)
-    teammate_controller.showDetailsForTeammate(teammate)
+    editTeammate(Teammate.all[indexPath.row])
     @editing_teammate_index = indexPath
   end
 
