@@ -3,10 +3,7 @@ class TeamController < UITableViewController
 
   def viewDidLoad
     view.dataSource = view.delegate = self
-  end
-
-  def viewWillAppear(animated)
-    navigationController.setNavigationBarHidden(true, animated: true)
+    navigationController.navigationBar.topItem.rightBarButtonItem = editButtonItem
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
@@ -22,6 +19,7 @@ class TeamController < UITableViewController
     teammate = Teammate::All[indexPath.row]
     cell.textLabel.text = teammate.display_name
     cell.accessoryType = teammate.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone
+    cell.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton
     cell
   end
 
