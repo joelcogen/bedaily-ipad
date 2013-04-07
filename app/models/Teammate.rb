@@ -3,10 +3,13 @@
 class Teammate
   include MotionModel::Model
   include MotionModel::ArrayModelAdapter
+  include MotionModel::Validatable
 
-  columns :display_name => :string,
-          :spoken_name  => :string,
-          :selected     => { type: :boolean, default: true }
+  columns display_name: :string,
+          spoken_name:  :string,
+          selected:     { type: :boolean, default: true }
+
+  validate :display_name, presence: true
 
   alias real_spoken_name spoken_name
   def spoken_name
