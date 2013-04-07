@@ -6,6 +6,19 @@ class TeamController < UITableViewController
     navigationController.navigationBar.topItem.rightBarButtonItem = editButtonItem
   end
 
+  def viewDidAppear(animated)
+    super
+    NSNotificationCenter.defaultCenter.addObserver(self, selector: 'dataDidChange:',
+                                                         name: 'MotionModelDataDidChangeNotification',
+                                                         object: nil)
+  end
+
+  def dataDidChange(notification)
+    if notification.object.is_a?(Teammate) && notification.userInfo[:action] == 'update'
+      view.reloadRowsAtIndexPaths([@editing_teammate_index], withRowAnimation: false)
+    end
+  end
+
   def tableView(tableView, numberOfRowsInSection: section)
     Teammate.all.size
   end
@@ -25,8 +38,9 @@ class TeamController < UITableViewController
 
   def tableView(tableView, accessoryButtonTappedForRowWithIndexPath: indexPath)
     teammate = Teammate.all[indexPath.row]
-    navigationController.pushViewController(teammate_controller, animated:true)
+    navigationController.pushViewController(teammate_controller, animated: true)
     teammate_controller.showDetailsForTeammate(teammate)
+    @editing_teammate_index = indexPath
   end
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)

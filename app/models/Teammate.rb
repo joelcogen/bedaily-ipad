@@ -8,8 +8,9 @@ class Teammate
           :spoken_name  => :string,
           :selected     => { type: :boolean, default: true }
 
+  alias real_spoken_name spoken_name
   def spoken_name
-    @spoken_name || display_name
+    real_spoken_name || display_name
   end
 
   def toggle_selected
