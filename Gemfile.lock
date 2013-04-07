@@ -1,12 +1,22 @@
+GIT
+  remote: git://github.com/sxross/MotionModel.git
+  revision: b3d477a6f1f244b29a95cca79b143466f7061844
+  specs:
+    motion_model (0.4.1)
+      bubble-wrap (~> 1.1.4)
+      motion-support (>= 0.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
     bubble-wrap (1.1.5)
+    motion-support (0.1.0)
+      bubble-wrap
     rake (10.0.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bubble-wrap
+  motion_model!
   rake

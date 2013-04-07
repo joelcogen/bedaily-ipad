@@ -1,14 +1,25 @@
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions: launchOptions)
-    # UIScreen describes the display our app is running on
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
-    #dailyController = DailyController.alloc.initWithNibName(nil, bundle: nil)
-    #teamController = TeamController.alloc.initWithNibName(nil, bundle: nil)
+    Teammate.load!
+
+    Teammate.create(
+      display_name: "JCO",
+      spoken_name: "Joel"
+    )
+    Teammate.create(
+      display_name: "SAM",
+      spoken_name: "Stephan"
+    )
 
     @window.rootViewController = SplitController.alloc.init
 
     @window.makeKeyAndVisible
     true
+  end
+
+  def applicationWillResignActive(application)
+    Teammate.save!
   end
 end

@@ -1,14 +1,12 @@
 # encoding: utf-8
 
 class Teammate
-  attr_accessor :display_name, :selected
-  attr_writer :spoken_name
+  include MotionModel::Model
+  include MotionModel::ArrayModelAdapter
 
-  def initialize(display_name, spoken_name = nil)
-    self.display_name = display_name
-    self.spoken_name = spoken_name
-    self.selected = true
-  end
+  columns :display_name => :string,
+          :spoken_name  => :string,
+          :selected     => { type: :boolean, default: true }
 
   def spoken_name
     @spoken_name || display_name
@@ -18,9 +16,11 @@ class Teammate
     self.selected = !self.selected
   end
 
-  All = [
-    Teammate.new("JCO", "Joel"),
-    Teammate.new("SAM", "Stéphan"),
-    Teammate.new("AVE", "Aurélien")
-  ]
+  def self.load!
+    deserialize_from_file('team.dat')
+  end
+
+  def self.save!
+    serialize_to_file('team.dat')
+  end
 end
