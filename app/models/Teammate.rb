@@ -20,6 +20,14 @@ class Teammate
     self.selected = !self.selected
   end
 
+  def self.all_by_name
+    order(:display_name).all
+  end
+
+  def self.all_random
+    all.sort { rand(2) - 1 }
+  end
+
   def self.load!
     deserialize_from_file('team.dat')
   end

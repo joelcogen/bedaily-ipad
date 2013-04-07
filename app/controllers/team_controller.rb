@@ -37,7 +37,7 @@ class TeamController < UITableViewController
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
-    Teammate.all.size
+    Teammate.all_by_name.size
   end
 
   def tableView(tableView, cellForRowAtIndexPath: indexPath)
@@ -46,7 +46,7 @@ class TeamController < UITableViewController
       cell
     end
 
-    teammate = Teammate.all[indexPath.row]
+    teammate = Teammate.all_by_name[indexPath.row]
     cell.textLabel.text = teammate.display_name
     cell.accessoryType = teammate.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone
     cell.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton
@@ -54,19 +54,19 @@ class TeamController < UITableViewController
   end
 
   def tableView(tableView, accessoryButtonTappedForRowWithIndexPath: indexPath)
-    editTeammate(Teammate.all[indexPath.row])
+    editTeammate(Teammate.all_by_name[indexPath.row])
     @editing_teammate_index = indexPath
   end
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-    teammate = Teammate.all[indexPath.row]
+    teammate = Teammate.all_by_name[indexPath.row]
     teammate.toggle_selected
     view.reloadRowsAtIndexPaths([indexPath], withRowAnimation: false)
   end
 
   def tableView(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
     if editingStyle == UITableViewCellEditingStyleDelete
-      Teammate.all[indexPath.row].delete
+      Teammate.all_by_name[indexPath.row].delete
       view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimationAutomatic)
     end
   end
