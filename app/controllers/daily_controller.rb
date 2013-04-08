@@ -27,7 +27,7 @@ class DailyController < UIViewController
 
   def donext
     @current_teammate += 1
-    stop(true) and return if @current_teammate == @datasource.team.size
+    stop(true) and return if @current_teammate == @datasource.team.select(&:selected).size
     @current_time = TIME_PER_USER
 
     update_name_label
