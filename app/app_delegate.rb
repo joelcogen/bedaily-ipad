@@ -2,15 +2,14 @@ class AppDelegate
   def application(application, didFinishLaunchingWithOptions: launchOptions)
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
-    Teammate.load!
-
-    @window.rootViewController = SplitController.alloc.init
+    @datasource = TeamDatasource.new
+    @window.rootViewController = SplitController.alloc.initWithDatasource(@datasource)
 
     @window.makeKeyAndVisible
     true
   end
 
   def applicationWillResignActive(application)
-    Teammate.save!
+    @datasource.save!
   end
 end

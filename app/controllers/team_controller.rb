@@ -1,8 +1,13 @@
 class TeamController < UITableViewController
-  CELLID = 'team_cells'
+  def initWithDatasource(datasource)
+    init
+    @datasource = datasource
+    self
+  end
 
   def viewDidLoad
-    view.dataSource = view.delegate = self
+    view.dataSource = @datasource
+    view.delegate = self
     navigationItem.leftBarButtonItem = editButtonItem
     navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
       UIBarButtonSystemItemAdd,
@@ -19,11 +24,8 @@ class TeamController < UITableViewController
 
   def dataDidChange(notification)
     if notification.object.is_a?(Teammate)
-      if notification.userInfo[:action] == 'update'
-        view.reloadRowsAtIndexPaths([@editing_teammate_index], withRowAnimation: false)
-      elsif notification.userInfo[:action] == 'add'
-        view.reloadData
-      end
+      @datasource.reload
+      view.reloadData unless notification.userInfo[:action] == "delete"
     end
   end
 
@@ -36,39 +38,15 @@ class TeamController < UITableViewController
     teammate_controller.showDetailsForTeammate(teammate)
   end
 
-  def tableView(tableView, numberOfRowsInSection: section)
-    Teammate.all_by_name.size
-  end
-
-  def tableView(tableView, cellForRowAtIndexPath: indexPath)
-    cell = tableView.dequeueReusableCellWithIdentifier(CELLID) || begin
-      cell = UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: CELLID)
-      cell
-    end
-
-    teammate = Teammate.all_by_name[indexPath.row]
-    cell.textLabel.text = teammate.display_name
-    cell.accessoryType = teammate.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone
-    cell.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton
-    cell
-  end
-
   def tableView(tableView, accessoryButtonTappedForRowWithIndexPath: indexPath)
-    editTeammate(Teammate.all_by_name[indexPath.row])
+    editTeammate(@datasource.team[indexPath.row])
     @editing_teammate_index = indexPath
   end
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-    teammate = Teammate.all_by_name[indexPath.row]
+    teammate = @datasource.team[indexPath.row]
     teammate.toggle_selected
     view.reloadRowsAtIndexPaths([indexPath], withRowAnimation: false)
-  end
-
-  def tableView(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
-    if editingStyle == UITableViewCellEditingStyleDelete
-      Teammate.all_by_name[indexPath.row].delete
-      view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimationAutomatic)
-    end
   end
 
   def teammate_controller
