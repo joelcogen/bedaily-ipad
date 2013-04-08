@@ -42,6 +42,7 @@ class TeammateController < UIViewController
     @teammate = teammate
     self.title = @teammate.display_name || "New teammate"
     display_name_field.text = @teammate.display_name
+    display_name_field.becomeFirstResponder
     spoken_name_field.text = @teammate.spoken_name
   end
 
