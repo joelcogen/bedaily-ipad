@@ -51,6 +51,9 @@ class DailyController < UIViewController
       update_name_label
       update_timer_label
 
+      @datasource.reload
+      @tableView.reloadData
+
       @stop_button.enabled = false
       @skip_button.enabled = false
     end
