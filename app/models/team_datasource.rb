@@ -13,12 +13,7 @@ class TeamDatasource
   end
 
   def randomize
-    return if @team.select(&:selected).size < 2
-    random_team = @team.dup
-    while random_team.select(&:selected) == @team.select(&:selected) || random_team.select(&:selected).first == @team.first || random_team.select(&:selected).last == @team.last
-      random_team = @team.sort { |t1, t2| !t1.selected ? 1 : (!t2.selected ? -1 : rand(3) - 1) }
-    end
-    @team = random_team
+    @team.sort! { |t1, t2| !t1.selected ? 1 : (!t2.selected ? -1 : rand(3) - 1) }
   end
 
   def save!
